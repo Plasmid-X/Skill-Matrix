@@ -175,5 +175,35 @@
   .skills-list-container::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
   }
+
+  /* Selectable skill card styles */
+  .skill-card-selectable {
+    transition: all 0.2s ease-in-out;
+    position: relative;
+  }
+
+  .skill-card-selectable:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .skill-card-selectable.selected {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #22c55e;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+  }
+
+  .skill-card-selectable.selected:hover {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  }
+
+  .skill-card-tick {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .skill-card-selectable:hover .skill-card-tick {
+    transform: scale(1.1);
+  }
   
 }

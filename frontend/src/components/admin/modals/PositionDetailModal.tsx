@@ -4,8 +4,8 @@ import { Badge } from '../../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
-import { Checkbox } from '../../ui/checkbox';
-import { Position, Skill } from '../../../types/admin';
+
+import { Position, Skill, Role } from '../../../types/admin';
 import { roleService, skillService } from '../../../services/api';
 import { toast } from 'sonner';
 import {
@@ -139,10 +139,11 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
         return skillService.updateSkill({
           id: skillId,
           name: existingSkill.name,
+          basic: existingSkill.basic,
           low: existingSkill.low,
           medium: existingSkill.medium,
-          average: existingSkill.medium,
           high: existingSkill.high,
+          expert: existingSkill.expert,
           position: [position.id]  // Pass as array of position IDs
         });
       });
@@ -154,10 +155,11 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
           return skillService.updateSkill({
             id: skill.id,
             name: skill.name,
+            basic: skill.basic,
             low: skill.low,
             medium: skill.medium,
-            average: skill.medium,
             high: skill.high,
+            expert: skill.expert,
             position: []  // Empty array means not assigned to any position
           });
         });
@@ -416,7 +418,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
                       })()}
                     </span>
                     <div className="flex space-x-2">
-                      {/* <Button
+                      <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleSelectAll}
@@ -424,7 +426,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
                         title="Select All (Ctrl+A)"
                       >
                         Select All
-                      </Button> */}
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -474,33 +476,27 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
                           sortedSkills.map((skill) => (
                             <div
                               key={skill.id}
-                              className={`flex items-start space-x-3 p-3 border rounded-lg transition-all duration-200 hover:shadow-sm ${
+                              onClick={() => handleSkillToggle(skill.id)}
+                              className={`skill-card-selectable relative flex items-start space-x-3 p-4 border rounded-lg cursor-pointer ${
                                 selectedSkills.has(skill.id)
-                                  ? 'bg-green-50 border-green-200 hover:bg-green-100'
-                                  : 'hover:bg-gray-50'
+                                  ? 'selected'
+                                  : 'hover:bg-gray-50 hover:border-gray-300'
                               }`}
                             >
-                              <div className="flex items-center space-x-2 mt-1">
-                                <Checkbox
-                                  id={`skill-${skill.id}`}
-                                  checked={selectedSkills.has(skill.id)}
-                                  onCheckedChange={() => handleSkillToggle(skill.id)}
-                                  className="transition-all duration-200"
-                                />
+                              {/* Circle tick button positioned at top-right */}
+                              <div className="absolute top-3 right-3">
                                 {selectedSkills.has(skill.id) ? (
-                                  <CheckCircle className="h-4 w-4 text-green-600 transition-all duration-200" />
+                                  <CheckCircle className="skill-card-tick h-5 w-5 text-green-600" />
                                 ) : (
-                                  <Circle className="h-4 w-4 text-gray-400 transition-all duration-200" />
+                                  <Circle className="skill-card-tick h-5 w-5 text-gray-400 hover:text-gray-600" />
                                 )}
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <label
-                                  htmlFor={`skill-${skill.id}`}
-                                  className="block font-medium text-sm cursor-pointer"
-                                >
+                              
+                              <div className="flex-1 min-w-0 pr-8">
+                                <div className="block font-medium text-sm mb-2">
                                   {skill.name}
-                                </label>
-                                <div className="mt-2 space-y-1 text-xs text-gray-600">
+                                </div>
+                                <div className="space-y-1 text-xs text-gray-600">
                                   {skill.basic && (
                                     <div><span className="font-medium">Basic:</span> {skill.basic}</div>
                                   )}
