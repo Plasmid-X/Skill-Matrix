@@ -6,7 +6,7 @@ import SubTeamManagement from './page/SubTeamManagement';
 import PositionManagement from './page/PositionManagement';
 import UserManagement from './page/UserManagement';
 import OrganizationOverview from './page/OrganizationOverview';
-import SkillManagement from './page/SkillManagement';
+import SkillCriteriaPage from '../criteria/SkillCriteriaPage';
 
 const HRAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const HRAdminDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="skills" className="space-y-4">
-          <SkillManagement onStatsUpdate={handleStatsUpdate} />
+          <SkillCriteriaPage onStatsUpdate={handleStatsUpdate} />
         </TabsContent>
       </Tabs>
     </div>

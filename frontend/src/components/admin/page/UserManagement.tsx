@@ -759,10 +759,10 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onStatsUpdate })
               }}
             >
               <SelectTrigger className="bg-blue-600 text-white hover:bg-blue-700 px-2 py-2 rounded flex items-center justify-between w-[160px]">
-                <span className="font-medium">Add User</span>
+                <span className="font-medium pl-10">Add User</span>
               </SelectTrigger>
 
-              <SelectContent className="w-48">
+              <SelectContent className="w-25">
                 <div
                   onClick={() => {
                     setIsSingleOpen(true);
@@ -790,6 +790,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onStatsUpdate })
                   Upload Bulk Users
                 </div>
               </SelectContent>
+
             </Select>
           </div>
           </div>

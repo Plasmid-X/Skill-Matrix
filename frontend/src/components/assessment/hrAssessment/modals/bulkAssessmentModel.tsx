@@ -35,8 +35,8 @@ export const BulkAssessmentModal: React.FC<{
   setScheduledDate: (date: string) => void;
   scheduleType: string;
   setScheduleType: (type: string) => void;
-  deadlineDays: number;
-  setDeadlineDays: (days: number) => void;
+  deadlineDate: string;
+  setDeadlineDate: (date: string) => void;
   comments: string;
   setComments: (comments: string) => void;
   isSubmitting: boolean;
@@ -57,8 +57,8 @@ export const BulkAssessmentModal: React.FC<{
   setScheduledDate, 
   scheduleType,
   setScheduleType,
-  deadlineDays,
-  setDeadlineDays,
+  deadlineDate,
+  setDeadlineDate,
   comments, 
   setComments, 
   isSubmitting, 
@@ -115,21 +115,20 @@ export const BulkAssessmentModal: React.FC<{
             />
           </div>
 
-          {/* Deadline Days */}
+          {/* Deadline Date */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Deadline (Days to Complete)
+              Deadline Date
             </label>
             <input
-              type="number"
-              min="1"
-              max="30"
-              value={deadlineDays}
-              onChange={(e) => setDeadlineDays(parseInt(e.target.value))}
+              type="datetime-local"
+              value={deadlineDate}
+              onChange={(e) => setDeadlineDate(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
             />
             <p className="text-sm text-gray-500 mt-1">
-              Number of days from initiation to complete the assessment (1-30 days)
+              Select the date and time when the assessment should be completed
             </p>
           </div>
 

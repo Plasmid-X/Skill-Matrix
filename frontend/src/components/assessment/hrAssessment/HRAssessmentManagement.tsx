@@ -94,7 +94,7 @@ const HRAssessmentManagement: React.FC = () => {
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduleType, setScheduleType] = useState("QUARTERLY");
-  const [deadlineDays, setDeadlineDays] = useState(7);
+  const [deadlineDate, setDeadlineDate] = useState("");
   const [comments, setComments] = useState("");
 
   // Bulk assessment states
@@ -102,11 +102,21 @@ const HRAssessmentManagement: React.FC = () => {
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [excludedUsers, setExcludedUsers] = useState<string[]>([]);
   const [bulkScheduleType, setBulkScheduleType] = useState("QUARTERLY");
-  const [bulkDeadlineDays, setBulkDeadlineDays] = useState(7);
+  const [bulkDeadlineDate, setBulkDeadlineDate] = useState("");
+
+  // Helper function to get default deadline date (7 days from now)
+  const getDefaultDeadlineDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date.toISOString().slice(0, 16); // Format for datetime-local input
+  };
 
   useEffect(() => {
     if (user?.role?.name === "hr") {
       loadHRData();
+      // Set default deadline dates
+      if (!deadlineDate) setDeadlineDate(getDefaultDeadlineDate());
+      if (!bulkDeadlineDate) setBulkDeadlineDate(getDefaultDeadlineDate());
     }
   }, [user]);
 
@@ -179,10 +189,21 @@ const HRAssessmentManagement: React.FC = () => {
       return;
     }
 
-    if (deadlineDays < 1 || deadlineDays > 30) {
+    if (!deadlineDate) {
       toast({
         title: "Error",
-        description: "Deadline days must be between 1 and 30",
+        description: "Please select a deadline date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const deadline = new Date(deadlineDate);
+    const now = new Date();
+    if (deadline <= now) {
+      toast({
+        title: "Error",
+        description: "Deadline must be in the future",
         variant: "destructive",
       });
       return;
@@ -190,6 +211,9 @@ const HRAssessmentManagement: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      // Calculate deadline days from now
+      const deadlineDays = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      
       const response = await assessmentService.initiateAssessment({
         targetUserId: selectedUser,
         skillIds: selectedSkills,
@@ -224,16 +248,27 @@ const HRAssessmentManagement: React.FC = () => {
     if (!bulkTitle.trim()) {
       toast({
         title: "Error",
-        description: "Please provide a title and select at least one skill",
+        description: "Please provide a title",
         variant: "destructive",
       });
       return;
     }
 
-    if (bulkDeadlineDays < 1 || bulkDeadlineDays > 30) {
+    if (!bulkDeadlineDate) {
       toast({
         title: "Error",
-        description: "Deadline days must be between 1 and 30",
+        description: "Please select a deadline date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const deadline = new Date(bulkDeadlineDate);
+    const now = new Date();
+    if (deadline <= now) {
+      toast({
+        title: "Error",
+        description: "Deadline must be in the future",
         variant: "destructive",
       });
       return;
@@ -241,12 +276,15 @@ const HRAssessmentManagement: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      // Calculate deadline days from now
+      const deadlineDays = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      
       const response = await assessmentService.initiateBulkAssessment({
         assessmentTitle: bulkTitle,
         includeTeams: selectedTeams.length > 0 ? selectedTeams : ["all"],
         scheduledDate: scheduledDate || undefined,
         scheduleType: bulkScheduleType,
-        deadlineDays: bulkDeadlineDays,
+        deadlineDays,
         comments,
         excludeUsers: excludedUsers,
       });
@@ -433,7 +471,7 @@ const HRAssessmentManagement: React.FC = () => {
     setSelectedSkills([]);
     setScheduledDate("");
     setScheduleType("QUARTERLY");
-    setDeadlineDays(7);
+    setDeadlineDate(getDefaultDeadlineDate());
     setComments("");
   };
 
@@ -444,7 +482,7 @@ const HRAssessmentManagement: React.FC = () => {
     setExcludedUsers([]);
     setScheduledDate("");
     setBulkScheduleType("QUARTERLY");
-    setBulkDeadlineDays(7);
+    setBulkDeadlineDate(getDefaultDeadlineDate());
     setComments("");
   };
 
@@ -706,8 +744,8 @@ const HRAssessmentManagement: React.FC = () => {
           setScheduledDate={setScheduledDate}
           scheduleType={bulkScheduleType}
           setScheduleType={setBulkScheduleType}
-          deadlineDays={bulkDeadlineDays}
-          setDeadlineDays={setBulkDeadlineDays}
+          deadlineDate={bulkDeadlineDate}
+          setDeadlineDate={setBulkDeadlineDate}
           comments={comments}
           setComments={setComments}
           isSubmitting={isSubmitting}

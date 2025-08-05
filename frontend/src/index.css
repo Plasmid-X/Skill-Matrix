@@ -205,5 +205,15 @@
   .skill-card-selectable:hover .skill-card-tick {
     transform: scale(1.1);
   }
+
+  /* Hide scrollbar utility class */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
   
 }
