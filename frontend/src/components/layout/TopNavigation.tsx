@@ -22,6 +22,8 @@ import {
   Menu,
   X,
   Settings,
+  Building,
+  MapPin,
 } from "lucide-react";
 import { userService } from "@/services/api";
 import { UserInfo } from "os";
@@ -55,11 +57,11 @@ const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) => {
 
     if (user?.role?.name === "admin") {
       // Admin users get admin-specific navigation items
-      baseItems.splice(1,2,
+      baseItems.splice(1, 1, // Remove skill-criteria and replace with admin items
         { id: "admin-users", label: "Users", icon: Users },
-        { id: "admin-teams", label: "Teams", icon: Users },
-        { id: "admin-subteams", label: "SubTeams", icon: Users },
-        { id: "admin-positions", label: "Positions", icon: Target },
+        { id: "admin-teams", label: "Teams", icon: Building },
+        { id: "admin-subteams", label: "Sub Teams", icon: Users },
+        { id: "admin-positions", label: "Positions", icon: MapPin },
         { id: "admin-skills", label: "Skills", icon: Target }
       );
     } else if (user?.role?.name === "hr") {

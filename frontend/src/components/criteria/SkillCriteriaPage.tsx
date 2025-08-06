@@ -201,20 +201,6 @@ const SkillCriteriaPage: React.FC<SkillCriteriaPageProps> = ({ onStatsUpdate }) 
 
   return (
     <div className="">
-      <div className="flex justify-between mb-4 items-center">
-        <div>
-          <h1 className="text-3xl font-bold">
-            {isAdminContext ? "Skill Management" : "Skill Criteria"}
-          </h1>
-          <p className="text-gray-600 mt-1">
-            {canEdit 
-              ? "Manage skill criteria and definitions for all positions"
-              : "View skill criteria and definitions for all positions"
-            }
-          </p>
-        </div>
-      </div>
-
       {/* Conditionally render modals only if user can edit */}
       {canEdit && (
         <>

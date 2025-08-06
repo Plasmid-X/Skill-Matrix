@@ -494,7 +494,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ onStatsUpdate })
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">User Management</h2>
+        <div></div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

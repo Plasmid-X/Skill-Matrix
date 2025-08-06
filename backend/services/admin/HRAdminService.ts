@@ -1,5 +1,5 @@
 import { Not, IsNull } from "typeorm";
-import { teamRepo,subTeamRepo,positionRepo,skillRepo } from "../../config/dataSource";
+import { teamRepo,subTeamRepo,positionRepo,skillRepo,userRepo } from "../../config/dataSource";
 import { TeamType, subTeamType, PositionType } from "../../types/entities";
 import * as Boom from "@hapi/boom";
 
@@ -621,13 +621,26 @@ export const HRAdminService = {
 
   async getOrganizationStats() {
     try {
-      const [activeTeams, deletedTeams, activesubTeams, deletedsubTeams, activePositions, deletedPositions] = await Promise.all([
+      const [
+        activeTeams, 
+        deletedTeams, 
+        activesubTeams, 
+        deletedsubTeams, 
+        activePositions, 
+        deletedPositions,
+        activeUsers,
+        inactiveUsers,
+        totalSkills
+      ] = await Promise.all([
         teamRepo.count({ where: { isActive: true } }),
         teamRepo.count({ where: { isActive: false } }),
         subTeamRepo.count({ where: { isActive: true } }),
         subTeamRepo.count({ where: { isActive: false } }),
         positionRepo.count({ where: { isActive: true } }),
         positionRepo.count({ where: { isActive: false } }),
+        userRepo.count({ where: { isActive: true } }),
+        userRepo.count({ where: { isActive: false } }),
+        skillRepo.count()
       ]);
 
       return {
@@ -645,6 +658,15 @@ export const HRAdminService = {
           active: activePositions,
           deleted: deletedPositions,
           total: activePositions + deletedPositions,
+        },
+        users: {
+          active: activeUsers,
+          inactive: inactiveUsers,
+          total: activeUsers + inactiveUsers,
+        },
+        skills: {
+          active: totalSkills, // Assuming all skills are active for now
+          total: totalSkills,
         },
       };
     } catch (error) {

@@ -17,6 +17,11 @@ import TeamAssessment from "@/components/assessment/teamAssessment/TeamAssessmen
 import EmployeeAssessmentReview from "@/components/assessment/employeeAssessment/EmployeeAssessmentReview";
 import HRAssessmentManagement from "@/components/assessment/hrAssessment/HRAssessmentManagement";
 import HRAdminDashboard from "@/components/admin/HRAdminDashboard";
+import AdminUsersPage from "@/components/admin/AdminUsersPage";
+import AdminTeamsPage from "@/components/admin/AdminTeamsPage";
+import AdminSubTeamsPage from "@/components/admin/AdminSubTeamsPage";
+import AdminPositionsPage from "@/components/admin/AdminPositionsPage";
+import AdminSkillsPage from "@/components/admin/AdminSkillsPage";
 import { verifyLead } from "@/utils/helper";
 
 
@@ -61,21 +66,17 @@ const Index = () => {
     } else if(path.startsWith("/hr-assessment-management")){
       setActiveTab("hr-assessment-management");
     } else if(path.startsWith("/admin-dashboard")){
-      const urlParams = new URLSearchParams(location.search);
-      const tab = urlParams.get('tab');
-      if (tab === 'users') {
-        setActiveTab("admin-users");
-      } else if (tab === 'teams') {
-        setActiveTab("admin-teams");
-      } else if (tab === 'subteams') {
-        setActiveTab("admin-subteams");
-      } else if (tab === 'positions') {
-        setActiveTab("admin-positions");
-      } else if (tab === 'skills') {
-        setActiveTab("admin-skills");
-      } else {
-        setActiveTab("admin-dashboard");
-      }
+      setActiveTab("dashboard");
+    } else if(path.startsWith("/admin-users")){
+      setActiveTab("admin-users");
+    } else if(path.startsWith("/admin-teams")){
+      setActiveTab("admin-teams");
+    } else if(path.startsWith("/admin-subteams")){
+      setActiveTab("admin-subteams");
+    } else if(path.startsWith("/admin-positions")){
+      setActiveTab("admin-positions");
+    } else if(path.startsWith("/admin-skills")){
+      setActiveTab("admin-skills");
     }
     else {
       setActiveTab("dashboard");
@@ -155,23 +156,20 @@ const Index = () => {
       case "hr-assessment-management":
         navigate("/hr-assessment-management");
         break;
-      case "admin-dashboard":
-        navigate("/admin-dashboard");
-        break;
       case "admin-users":
-        navigate("/admin-dashboard?tab=users");
+        navigate("/admin-users");
         break;
       case "admin-teams":
-        navigate("/admin-dashboard?tab=teams");
+        navigate("/admin-teams");
         break;
       case "admin-subteams":
-        navigate("/admin-dashboard?tab=subteams");
+        navigate("/admin-subteams");
         break;
       case "admin-positions":
-        navigate("/admin-dashboard?tab=positions");
+        navigate("/admin-positions");
         break;
       case "admin-skills":
-        navigate("/admin-dashboard?tab=skills");
+        navigate("/admin-skills");
         break;
       default:
         navigate("/");
@@ -193,6 +191,11 @@ const Index = () => {
           <Route path="/employee-assessment-review" element={<EmployeeAssessmentReview/>}/>
           <Route path="/hr-assessment-management" element={<HRAssessmentManagement/>}/>
           <Route path="/admin-dashboard" element={<HRAdminDashboard/>}/>
+          <Route path="/admin-users" element={<AdminUsersPage/>}/>
+          <Route path="/admin-teams" element={<AdminTeamsPage/>}/>
+          <Route path="/admin-subteams" element={<AdminSubTeamsPage/>}/>
+          <Route path="/admin-positions" element={<AdminPositionsPage/>}/>
+          <Route path="/admin-skills" element={<AdminSkillsPage/>}/>
           <Route path="/login" element={<OAuthLoginForm />} />
           <Route path="/legacy-login" element={<LoginForm />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />

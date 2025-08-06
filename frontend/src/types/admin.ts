@@ -75,6 +75,15 @@ export interface OrganizationStats {
     deleted: number;
     total: number;
   };
+  users: {
+    active: number;
+    inactive: number;
+    total: number;
+  };
+  skills: {
+    active: number;
+    total: number;
+  };
 }
 
 export interface CreateTeamRequest {
