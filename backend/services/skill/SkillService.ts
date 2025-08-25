@@ -35,16 +35,6 @@ const SkillService = {
         throw new Error("Skill not found");
       }
 
-      // Check if name is being updated and if it conflicts with existing skill
-      if (updateData.name && updateData.name !== skill.name) {
-        const existingSkill = await skillRepo.findOneBy({
-          name: updateData.name,
-        });
-        if (existingSkill) {
-          throw new Error("Skill name already exists");
-        }
-      }
-
       // Merge and save updates
       skillRepo.merge(skill, updateData as any);
       return await skillRepo.save(skill);
