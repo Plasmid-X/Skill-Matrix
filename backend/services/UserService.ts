@@ -53,7 +53,7 @@ const UserService = {
   },
 
   // Hr CRUD Operations
-  createUser: async (data: UserType): Promise<void> => {
+  createUser: async (data: UserData): Promise<void> => {
     const id = await AppDataSource.query(`SELECT * FROM users ORDER BY  CAST(id AS INTEGER) DESC LIMIT 1;`);
 
     await AppDataSource.query(`
@@ -63,11 +63,39 @@ const UserService = {
       )`);
 
     try{
-      data.id = (parseInt(id[0].id) + 1).toString();
-      await userRepo.save(data);
+      // Convert foreign key names to IDs
+      const roleId = await roleRepo.findOneBy({name: data.role});
+      const leadId = await userRepo.findOneBy({userId: data.lead});
+      const hrId = await userRepo.findOneBy({userId: data.hr});
+      const subTeamId = await subTeamRepo.findOneBy({name: data.subTeam});
+      const positionId = await positionRepo.findOneBy({name: data.position});
+      const teamId = await teamRepo.findOneBy({name: data.team});
+
+      // Create user data with proper foreign key IDs
+      const userData: any = {
+        ...data,
+        id: (parseInt(id[0].id) + 1).toString(),
+        roleId: roleId?.id || null,
+        positionId: positionId?.id || null,
+        teamId: teamId?.id || null,
+        subTeamId: subTeamId?.id || null,
+        leadId: leadId?.id || null,
+        hrId: hrId?.id || null,
+      };
+
+      // Remove the string fields that were converted to IDs
+      delete userData.role;
+      delete userData.position;
+      delete userData.team;
+      delete userData.subTeam;
+      delete userData.lead;
+      delete userData.hr;
+
+      await userRepo.save(userData);
     }
     catch(err){
-      console.log(err);
+      console.log("Error in createUser:", err);
+      throw err;
     }
   },
 
