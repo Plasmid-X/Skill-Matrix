@@ -25,10 +25,43 @@ const UserController: Controller = {
     }
   },
 
-  createUser: async (req: Request, h: ResponseToolkit) => {
-  try {
-    const data = req.payload as any[];
-    if (!data || !data.length) throw new Error("Verify User Data!");
+  // Single user creation (without Redis)
+  createSingleUser: async (req: Request, h: ResponseToolkit) => {
+    try {
+      const data = req.payload as any;
+      if (!data) throw new Error("User data is required!");
+
+      const requiredFields: string[] = [
+        'name', 'userId', 'email', 'role',
+        'position', 'team', 'subTeam', 'lead', 'hr', 'isActive'
+      ];
+
+      // Validate required fields
+      requiredFields.forEach((field) => {
+        if (!data[field] && data[field] !== false) {
+          throw new Error(`Field '${field}' is required`);
+        }
+      });
+
+      // Create single user without Redis
+      await UserService.createUser(data);
+
+      return h.response({
+        message: "User created successfully!",
+        success: true
+      }).code(201);
+
+    } catch (err: any) {
+      console.log("Single User Creation Error:", err.message);
+      return h.response({ error: err.message }).code(400);
+    }
+  },
+
+  // Bulk user creation (with Redis)
+  createBulkUsers: async (req: Request, h: ResponseToolkit) => {
+    try {
+      const data = req.payload as any[];
+      if (!data || !data.length) throw new Error("Verify User Data!");
 
     const requiredFields: string[] = [
       'name', 'userId', 'email', 'role',
@@ -76,6 +109,31 @@ const UserController: Controller = {
     return h.response({ error: err.message }).code(400);
   }
 },
+
+  // Legacy method for backward compatibility - routes to appropriate method
+  createUser: async (req: Request, h: ResponseToolkit) => {
+    try {
+      const data = req.payload as any;
+      
+      // Check if it's a single user (object) or bulk users (array)
+      if (Array.isArray(data)) {
+        if (data.length === 1) {
+          // Single user sent as array, extract and create without Redis
+          const singleUserReq = { ...req, payload: data[0] } as Request;
+          return UserController.createSingleUser(singleUserReq, h);
+        } else {
+          // Multiple users, use bulk upload with Redis
+          return UserController.createBulkUsers(req, h);
+        }
+      } else {
+        // Single user object, create without Redis
+        return UserController.createSingleUser(req, h);
+      }
+    } catch (err: any) {
+      console.log("User Creation Error:", err.message);
+      return h.response({ error: err.message }).code(400);
+    }
+  },
 
 
   updateUser: async (req: Request, h: ResponseToolkit) => {

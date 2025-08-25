@@ -26,6 +26,18 @@ const userRoutes = {
       },
       {
         method: "POST",
+        path: "/create-single",
+        options: authorizeRoles([role.HR, role.ADMIN]),
+        handler: UserController.createSingleUser,
+      },
+      {
+        method: "POST",
+        path: "/create-bulk",
+        options: authorizeRoles([role.HR, role.ADMIN]),
+        handler: UserController.createBulkUsers,
+      },
+      {
+        method: "POST",
         path: "/update",
         options: authorizeRoles([role.HR, role.ADMIN]),
         handler: UserController.updateUser,
